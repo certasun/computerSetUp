@@ -1,0 +1,146 @@
+IF(
+NOT (ISBLANK ([Project__c].Canceled_Date__c)),
+"Canceled",
+
+IF(
+NOT (ISBLANK ([Project__c].Project_Complete__c)),
+"Project complete",
+
+IF(
+NOT (ISBLANK ([Project__c].Installation_Complete__c)),
+"Closing project",
+
+IF(
+	AND (
+		NOT (ISBLANK ([Project__c].Mechanically_Complete__c)),
+		OR ([Project__c].RecordType.Name = "SunPower Lease", [Project__c].RecordType.Name = "SunPower TPI"),
+		ISBLANK ([Project__c].SPWR_Photos_Docs_Uploaded__c)
+		),
+"Documenting installation",
+
+IF(
+NOT (ISBLANK([Project__c].Customer_Complete__c)),
+"Closing installation",
+
+IF(
+NOT (ISBLANK ([Project__c].Passed_Inspection__c)),
+"Notifying customer",
+
+IF(
+NOT (ISBLANK ([Project__c].Mechanically_Complete__c)),
+"Waiting to pass inspection",
+
+IF(
+NOT (ISBLANK ([Project__c].First_Day_of_Installation__c)),
+"Installing",
+
+IF(
+NOT (ISBLANK ([Project__c].All_Permissions_Received__c)),
+"Available for installation",
+
+IF(
+  AND (
+	OR 	(
+		NOT(ISBLANK([Project__c].Permit_Approved__c)),
+		NOT(ISBLANK([Project__c].Permit_Received__c))
+		),
+	OR	(
+		ISBLANK ([Project__c].IC_Approved__c),
+		ISBLANK ([Project__c].NM_Approved__c)
+		)
+	  ),
+"Waiting for IC or NM approval",
+
+IF(
+  AND	(
+		ISBLANK([Project__c].Permit_Approved__c),
+		ISBLANK([Project__c].Permit_Received__c),
+		NOT (ISBLANK([Project__c].Permit_Package_1st_Submitted__c))
+		),
+"Waiting for permit",
+
+IF(
+	AND (
+		ISBLANK ([Project__c].Permit_Package_1st_Submitted__c),
+		NOT(ISBLANK([Project__c].Eng_Plans_Received__c)),
+		OR	(
+			NOT (ISBLANK([Project__c].HOA_Approved__c)),
+			OR (
+				ISBLANK([Project__c].HOA_Name__c),
+				[Project__c].HOA_Name__c = "None"
+				)
+			)
+		),
+"Preparing permit application",
+
+IF(
+	AND	(
+		NOT ( ISBLANK([Project__c].HOA_Name__c)),
+		NOT ( [Project__c].HOA_Name__c = "None"),
+		NOT ( ISBLANK([Project__c].HOA_App_1st_Submitted__c)),
+		ISBLANK([Project__c].HOA_Approved__c)
+		),
+"Waiting for HOA approval",
+
+IF(
+  AND (
+	NOT (ISBLANK([Project__c].HOA_Name__c)),
+	NOT ([Project__c].HOA_Name__c = "None"),
+	ISBLANK([Project__c].HOA_App_1st_Submitted__c),
+	ISBLANK([Project__c].HOA_Approved__c),
+	NOT(ISBLANK([Project__c].Eng_Plans_Received__c))
+	),
+"Preparing HOA application",
+
+IF(
+  AND (
+	[Project__c].Site_Assessment_Conducted__c = TRUE,
+	NOT (ISBLANK([Project__c].Eng_Package_1st_Requested__c)),
+	ISBLANK([Project__c].Eng_Plans_Received__c)
+	),
+"Waiting for engineering plans",
+
+IF(
+  AND(
+	ISBLANK([Project__c].Eng_Package_1st_Requested__c),
+	[Project__c].Site_Assessment_Conducted__c = TRUE
+	),
+"Preparing engineering request",
+
+IF(
+	AND (
+		NOT (ISBLANK([Project__c].IC_App_Submitted__c )),
+		NOT (ISBLANK([Project__c].NM_App_Submitted__c )),
+		NOT (ISBLANK([Project__c].Generator_Reg_Opened__c )),
+		NOT (ISBLANK([Project__c].Generator_ID__c )),
+		[Project__c].Site_Assessment_Conducted__c = FALSE
+		),
+"Waiting for site assessment",
+
+IF(
+	AND (
+		[Project__c].Financing_Approved__c = TRUE,
+		OR  (
+			ISBLANK([Project__c].IC_App_Submitted__c ),
+			ISBLANK([Project__c].NM_App_Submitted__c ),
+			ISBLANK([Project__c].Generator_Reg_Opened__c),
+			ISBLANK([Project__c].Generator_ID__c)
+			),
+		NOT (ISBLANK([Project__c].All_DPs_Recieved__c))
+		),
+"Setting up",
+
+IF(
+	AND (
+		[Project__c].Financing_Approved__c = TRUE,
+		ISBLANK([Project__c].All_DPs_Recieved__c)
+		),
+"Collecting down payment",
+
+IF(
+[Project__c].Financing_Approved__c = FALSE,
+"Waiting for financier's approval",
+
+"Other"
+
+))))))))))))))))))))
